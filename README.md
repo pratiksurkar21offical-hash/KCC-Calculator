@@ -27,11 +27,7 @@ The calculator covers all three components of a composite KCC facility over a **
 
 ## Screenshots
 
-### Main Interface — Empty State
-![KCC Calculator Empty State](screenshots/kcc-empty-state.png)
-
-### Sample Data Loaded (RBI Illustration)
-![KCC Calculator Sample Loaded](screenshots/kcc-sample-loaded.png)
+<img width="1337" height="697" alt="image" src="https://github.com/user-attachments/assets/54377d75-c6b7-4e81-be64-65a333c94aca" />
 
 ---
 
