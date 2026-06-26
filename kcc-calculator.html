@@ -1,0 +1,544 @@
+<!-- KCC Calculator -->
+<title>KCC Composite Limit Calculator — RBI Directions 2026</title>
+<style>
+:root{
+  --navy:#0F2B4E;--blue:#1A56A8;--blue-mid:#2563EB;--blue-tint:#EEF4FB;
+  --green:#14532D;--green-tint:#DCFCE7;--amber:#92400E;--amber-tint:#FEF3C7;
+  --red:#991B1B;--red-tint:#FEE2E2;
+  --text:#0F172A;--text2:#475569;--text3:#94A3B8;
+  --border:#CBD5E1;--border-light:#E2E8F0;
+  --bg:#F0F4F8;--surface:#FFFFFF;--surface2:#F8FAFC;
+  --r:7px;--sh:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);font-size:13.5px;line-height:1.55;min-height:100vh;}
+.hdr{background:var(--navy);color:#fff;padding:0 28px;display:flex;align-items:stretch;border-bottom:3px solid var(--blue);position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,.3);}
+.hdr-brand{display:flex;flex-direction:column;justify-content:center;padding:14px 24px 14px 0;border-right:1px solid rgba(255,255,255,.15);margin-right:20px;}
+.hdr-eyebrow{font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.55);font-weight:600;margin-bottom:3px;}
+.hdr-title{font-size:17px;font-weight:700;letter-spacing:-.02em;color:#fff;line-height:1.2;}
+.hdr-meta{flex:1;display:flex;flex-direction:column;justify-content:center;}
+.hdr-sub{font-size:11.5px;color:rgba(255,255,255,.6);letter-spacing:.01em;}
+.hdr-badge{display:inline-block;margin-top:4px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.85);font-size:9.5px;padding:2px 9px;border-radius:100px;letter-spacing:.06em;text-transform:uppercase;}
+.hdr-acts{display:flex;align-items:center;gap:9px;padding:14px 0 14px 20px;border-left:1px solid rgba(255,255,255,.15);margin-left:20px;}
+.main{display:grid;grid-template-columns:1fr 390px;gap:18px;padding:18px 28px;max-width:1440px;margin:0 auto;align-items:start;}
+.inputs-col{display:flex;flex-direction:column;gap:13px;}
+.results-col{position:sticky;top:71px;display:flex;flex-direction:column;gap:13px;max-height:calc(100vh - 89px);overflow-y:auto;padding-bottom:20px;scrollbar-width:thin;}
+.card{background:var(--surface);border-radius:var(--r);box-shadow:var(--sh);border:1px solid var(--border-light);overflow:hidden;}
+.flexi-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);padding:13px 17px;display:flex;flex-direction:column;gap:0;}
+.flexi-top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+.flexi-info{flex:1;}
+.flexi-info strong{font-size:13px;font-weight:700;}
+.flexi-info p{font-size:11.5px;color:var(--text2);margin-top:2px;}
+.flexi-ha{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.flexi-ha label{font-size:11.5px;color:var(--text2);white-space:nowrap;}
+.flexi-limit-row{display:none;align-items:flex-start;gap:10px;flex-wrap:wrap;padding-top:11px;border-top:1px solid var(--border-light);margin-top:11px;}
+.tog{position:relative;width:38px;height:21px;flex-shrink:0;}
+.tog input{opacity:0;width:0;height:0;}
+.tog-track{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:var(--border);border-radius:21px;transition:.2s;}
+.tog input:checked+.tog-track{background:var(--blue);}
+.tog-track::before{content:'';position:absolute;height:15px;width:15px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.25);}
+.tog input:checked+.tog-track::before{transform:translateX(17px);}
+.sec-hdr{width:100%;background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:11px;padding:13px 17px;text-align:left;border-bottom:1px solid transparent;transition:background .12s;user-select:none;}
+.sec-hdr:hover{background:var(--blue-tint);}
+.sec-hdr.open{border-bottom-color:var(--border-light);}
+.sec-badge{width:27px;height:27px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0;letter-spacing:-.01em;}
+.ba{background:#DBEAFE;color:#1D4ED8;}.bb{background:#DCFCE7;color:#15803D;}.bc{background:#FFEDD5;color:#C2410C;}
+.sec-title{flex:1;}
+.sec-title h2{font-size:13.5px;font-weight:700;letter-spacing:-.01em;}
+.sec-title p{font-size:11px;color:var(--text3);margin-top:2px;}
+.sec-sum{font-size:12px;color:var(--blue);font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap;padding-right:6px;}
+.chevron{color:var(--text3);font-size:11px;transition:transform .2s;flex-shrink:0;}
+.sec-hdr.open .chevron{transform:rotate(180deg);}
+.sec-body{padding:15px 17px;display:flex;flex-direction:column;gap:13px;overflow:hidden;}
+.sec-body.closed{display:none;}
+.inp-tbl{width:100%;border-collapse:collapse;font-size:12.5px;}
+.inp-tbl th{background:var(--surface2);font-weight:600;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--text2);padding:7px 9px;border-bottom:1px solid var(--border);text-align:left;white-space:nowrap;}
+.inp-tbl th.r{text-align:right;}
+.inp-tbl td{padding:5px 3px;border-bottom:1px solid var(--border-light);vertical-align:middle;}
+.inp-tbl tr:last-child td{border-bottom:none;}
+.computed-val{text-align:right;font-variant-numeric:tabular-nums;font-weight:600;color:var(--navy);padding-right:4px;white-space:nowrap;}
+input[type=text],input[type=number],select{width:100%;padding:5px 8px;border:1px solid var(--border);border-radius:5px;font-size:12.5px;color:var(--text);background:var(--surface);font-family:inherit;transition:border-color .12s,box-shadow .12s;outline:none;font-variant-numeric:tabular-nums;}
+input:focus,select:focus{border-color:var(--blue-mid);box-shadow:0 0 0 3px rgba(37,99,235,.12);}
+input[type=number]{text-align:right;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:6px 13px;border-radius:5px;font-size:12.5px;font-weight:600;cursor:pointer;border:1px solid transparent;transition:all .12s;font-family:inherit;white-space:nowrap;}
+.btn-primary{background:var(--blue);color:#fff;border-color:var(--blue);}
+.btn-primary:hover{filter:brightness(1.1);}
+.btn-secondary{background:var(--surface);color:var(--text);border-color:var(--border);}
+.btn-secondary:hover{background:var(--blue-tint);}
+.btn-add{background:var(--blue-tint);color:var(--blue);border-color:rgba(26,86,168,.2);font-size:12px;padding:5px 11px;}
+.btn-add:hover{background:#DBEAFE;}
+.btn-del{background:transparent;color:var(--text3);border:none;padding:3px 6px;font-size:13px;cursor:pointer;border-radius:4px;transition:all .12s;line-height:1;}
+.btn-del:hover{background:var(--red-tint);color:var(--red);}
+.btn-sm{padding:5px 11px;font-size:12px;}
+.ins-row{display:flex;align-items:center;gap:10px;background:var(--surface2);border:1px solid var(--border-light);border-radius:6px;padding:10px 13px;}
+.ins-row label{font-size:12px;font-weight:600;color:var(--text2);flex:1;}
+.ins-row small{display:block;font-size:10.5px;color:var(--text3);font-weight:400;margin-top:2px;}
+.ins-wrap{position:relative;width:160px;flex-shrink:0;}
+.ins-wrap .sym{position:absolute;left:8px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:12px;pointer-events:none;}
+.ins-wrap input{padding-left:20px;}
+.note{font-size:11.5px;padding:8px 12px;border-radius:5px;display:flex;gap:8px;align-items:flex-start;line-height:1.4;}
+.note-i{background:var(--blue-tint);color:var(--blue);border:1px solid rgba(26,86,168,.15);}
+.note-w{background:var(--amber-tint);color:var(--amber);border:1px solid rgba(146,64,14,.2);}
+.note-ico{font-size:13px;flex-shrink:0;margin-top:.5px;}
+.action-bar{display:flex;gap:9px;flex-wrap:wrap;padding:13px 17px;background:var(--surface);border-radius:var(--r);box-shadow:var(--sh);border:1px solid var(--border-light);}
+.res-card{background:var(--surface);border-radius:var(--r);box-shadow:var(--sh);border:1px solid var(--border-light);overflow:hidden;}
+.res-hdr{padding:11px 15px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#fff;}
+.res-body{padding:13px 15px;display:flex;flex-direction:column;gap:9px;}
+.calc-sec{border:1px solid var(--border-light);border-radius:6px;overflow:hidden;}
+.calc-sec-hdr{background:var(--surface2);padding:7px 12px;font-size:10.5px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;display:flex;justify-content:space-between;}
+.calc-rows{padding:7px 12px;display:flex;flex-direction:column;gap:3px;}
+.cr{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:12px;padding:2px 0;}
+.cr-lbl{color:var(--text2);}
+.cr-val{font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap;}
+.cr.sub{border-top:1px solid var(--border-light);padding-top:6px;margin-top:2px;font-weight:700;}
+.cr.sub .cr-val,.cr.tot .cr-val{color:var(--navy);}
+.cr.tot{border-top:1.5px solid var(--border);padding-top:6px;margin-top:2px;font-weight:700;font-size:13px;}
+.cr.muted .cr-lbl,.cr.muted .cr-val{color:var(--text3);font-style:italic;font-weight:400;}
+.strike{text-decoration:line-through;color:var(--text3);}
+.italic{font-style:italic;color:var(--text3);font-weight:400;}
+.divider{height:1px;background:var(--border-light);margin:2px 0;}
+.yr-tbl{width:100%;border-collapse:collapse;font-size:11.5px;font-variant-numeric:tabular-nums;}
+.yr-tbl th{background:var(--surface2);padding:5px 10px;font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--text2);text-align:right;border-bottom:1px solid var(--border);}
+.yr-tbl th:first-child{text-align:left;}
+.yr-tbl td{padding:5px 10px;border-bottom:1px solid var(--border-light);text-align:right;color:var(--text);}
+.yr-tbl td:first-child{text-align:left;color:var(--text2);font-weight:500;}
+.yr-tbl tr:last-child td{background:var(--blue-tint);font-weight:700;color:var(--navy);border-bottom:none;}
+.yr-tbl .empty td{text-align:center;color:var(--text3);padding:10px;}
+.cmpl-box{background:var(--navy);color:#fff;border-radius:7px;padding:16px;text-align:center;}
+.cmpl-lbl{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:6px;font-weight:600;}
+.cmpl-val{font-size:28px;font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums;color:#7DD3FC;line-height:1;}
+.cmpl-sub{font-size:10.5px;color:rgba(255,255,255,.45);margin-top:7px;}
+.badge-row{display:flex;gap:7px;flex-wrap:wrap;}
+.ibadge{font-size:10.5px;padding:4px 10px;border-radius:100px;font-weight:600;display:inline-flex;align-items:center;gap:4px;}
+.badge-cf{background:var(--green-tint);color:var(--green);border:1px solid rgba(20,83,45,.2);}
+.badge-tie{background:var(--amber-tint);color:var(--amber);border:1px solid rgba(146,64,14,.2);}
+.badge-col{background:var(--red-tint);color:var(--red);border:1px solid rgba(153,27,27,.2);}
+@media print{
+  .no-print{display:none!important;}
+  .hdr{position:static;box-shadow:none;}
+  .main{display:block;}
+  .results-col{position:static;max-height:none;overflow:visible;}
+  .sec-body.closed{display:flex!important;}
+  body{background:#fff;}
+  .card,.res-card{box-shadow:none;border:1px solid #ccc;page-break-inside:avoid;}
+  .cmpl-box{background:#0F2B4E!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+}
+@media(max-width:900px){
+  .main{grid-template-columns:1fr;}
+  .results-col{position:static;max-height:none;}
+  .hdr{flex-wrap:wrap;}
+}
+</style>
+
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body>
+
+<header class="hdr no-print">
+  <div class="hdr-brand">
+    <div class="hdr-eyebrow">Credit Manager Tool</div>
+    <div class="hdr-title">Kisan Credit Card Calculator</div>
+  </div>
+  <div class="hdr-meta">
+    <div class="hdr-sub">Composite Maximum Permissible Limit (CMPL) Estimator</div>
+    <span class="hdr-badge">RBI KCC Directions, 2026</span>
+  </div>
+  <div class="hdr-acts">
+    <button class="btn btn-secondary btn-sm" onclick="loadSample()">⊕ Load Sample</button>
+    <button class="btn btn-secondary btn-sm" onclick="resetAll()">↺ Reset</button>
+    <button class="btn btn-primary btn-sm" onclick="window.print()">⬆ Print / PDF</button>
+  </div>
+</header>
+
+<div class="main">
+  <div class="inputs-col">
+    <div class="flexi-card card" id="flexi-card">
+      <div class="flexi-top">
+        <label class="tog" title="Enable Flexi KCC mode">
+          <input type="checkbox" id="flexi-tog" onchange="onFlexiToggle()">
+          <span class="tog-track"></span>
+        </label>
+        <div class="flexi-info">
+          <strong>Flexi KCC — Marginal Farmer</strong>
+          <p>Simplified manual limit for landholding ≤ 1 hectare; bypasses Scale-of-Finance calculation.</p>
+        </div>
+        <div class="flexi-ha">
+          <label for="flexi-ha">Landholding (ha)</label>
+          <input type="number" id="flexi-ha" min="0" max="10" step="0.01" placeholder="0.00" style="width:80px;" oninput="computeAndRender()">
+        </div>
+      </div>
+      <div class="flexi-limit-row" id="flexi-limit-row">
+        <div class="ins-wrap" style="width:180px;">
+          <span class="sym">₹</span>
+          <input type="number" id="flexi-val" min="10000" max="50000" step="1000" value="25000" oninput="computeAndRender()">
+        </div>
+        <div style="flex:1;min-width:200px;">
+          <div class="note note-i">
+            <span class="note-ico">ℹ</span>
+            <span>Enter limit between <strong>₹10,000</strong> and <strong>₹50,000</strong>. Components A, B, C are not applied in Flexi mode.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="card-a">
+      <button class="sec-hdr open" id="hdr-a" onclick="toggleSec('a')">
+        <span class="sec-badge ba">A</span>
+        <div class="sec-title">
+          <h2>Component A — Working Capital for Crop Cultivation</h2>
+          <p>Scale of Finance per acre · 10% post-harvest + 20% maintenance add-ons · 6-year MPL escalation</p>
+        </div>
+        <span class="sec-sum" id="sum-a"></span>
+        <span class="chevron">▼</span>
+      </button>
+      <div class="sec-body" id="body-a">
+        <div style="overflow-x:auto;">
+          <table class="inp-tbl">
+            <thead><tr>
+              <th style="min-width:130px;">Crop Name</th>
+              <th style="width:88px;">Season</th>
+              <th style="width:88px;">Area (Acres)</th>
+              <th style="width:120px;">SoF (₹/Acre)</th>
+              <th class="r" style="width:115px;">Crop Loan (₹)</th>
+              <th style="width:36px;"></th>
+            </tr></thead>
+            <tbody id="crop-tbody"></tbody>
+          </table>
+        </div>
+        <button class="btn btn-add" onclick="addCrop()">+ Add Crop</button>
+        <div class="ins-row">
+          <label>Insurance Premium — Component A <small>Actual premium for crop insurance policies (PMFBY / private)</small></label>
+          <div class="ins-wrap"><span class="sym">₹</span><input type="number" id="ins-a" min="0" step="1" placeholder="0" oninput="computeAndRender()"></div>
+        </div>
+        <div class="note note-i" id="note-a-both" style="display:none;">
+          <span class="note-ico">ℹ</span>
+          <span><strong>No-double-counting (Rule 1):</strong> Component B is also active. The 10% post-harvest / consumption add-on is applied here in Component A only — it is suppressed in Component B.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="card-b">
+      <button class="sec-hdr" id="hdr-b" onclick="toggleSec('b')">
+        <span class="sec-badge bb">B</span>
+        <div class="sec-title">
+          <h2>Component B — Working Capital for Allied Activities</h2>
+          <p>Dairy, fisheries, poultry, beekeeping, etc. · same add-on structure as Component A</p>
+        </div>
+        <span class="sec-sum" id="sum-b"></span>
+        <span class="chevron">▼</span>
+      </button>
+      <div class="sec-body closed" id="body-b">
+        <div style="overflow-x:auto;">
+          <table class="inp-tbl">
+            <thead><tr>
+              <th style="min-width:150px;">Activity</th>
+              <th style="width:90px;">No. of Units</th>
+              <th style="width:120px;">SoF (₹/Unit)</th>
+              <th class="r" style="width:115px;">Base Amount (₹)</th>
+              <th style="width:36px;"></th>
+            </tr></thead>
+            <tbody id="allied-tbody"></tbody>
+          </table>
+        </div>
+        <button class="btn btn-add" onclick="addAllied()">+ Add Activity</button>
+        <div class="ins-row">
+          <label>Insurance Premium — Component B <small>Distinct policy for allied activity (e.g. livestock insurance)</small></label>
+          <div class="ins-wrap"><span class="sym">₹</span><input type="number" id="ins-b" min="0" step="1" placeholder="0" oninput="computeAndRender()"></div>
+        </div>
+        <div class="note note-w" id="note-b-ins" style="display:none;">
+          <span class="note-ico">⚠</span>
+          <span><strong>Insurance double-count check (Rule 2):</strong> Both A and B carry insurance. Verify these are distinct policies. Each cover is reckoned only once per RBI KCC Directions.</span>
+        </div>
+        <div class="note note-i" id="note-b-both" style="display:none;">
+          <span class="note-ico">ℹ</span>
+          <span><strong>No-double-counting (Rule 1):</strong> The 10% post-harvest / consumption add-on is suppressed here because Component A is active. It is counted once in Component A.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="card-c">
+      <button class="sec-hdr" id="hdr-c" onclick="toggleSec('c')">
+        <span class="sec-badge bc">C</span>
+        <div class="sec-title">
+          <h2>Component C — Investment Credit (Term Loan)</h2>
+          <p>Land development, irrigation, equipment, allied infrastructure · no escalation applied</p>
+        </div>
+        <span class="sec-sum" id="sum-c"></span>
+        <span class="chevron">▼</span>
+      </button>
+      <div class="sec-body closed" id="body-c">
+        <div style="overflow-x:auto;">
+          <table class="inp-tbl">
+            <thead><tr>
+              <th style="min-width:160px;">Particulars</th>
+              <th style="width:75px;">Year (1–6)</th>
+              <th style="width:88px;">No. of Units</th>
+              <th style="width:120px;">Cost / Unit (₹)</th>
+              <th class="r" style="width:115px;">Total (₹)</th>
+              <th style="width:36px;"></th>
+            </tr></thead>
+            <tbody id="term-tbody"></tbody>
+          </table>
+        </div>
+        <button class="btn btn-add" onclick="addTerm()">+ Add Item</button>
+      </div>
+    </div>
+
+    <div class="action-bar no-print">
+      <button class="btn btn-secondary" onclick="loadSample()">⊕ Load Sample (RBI Illustration)</button>
+      <button class="btn btn-secondary" onclick="resetAll()">↺ Reset All</button>
+      <div style="flex:1;"></div>
+      <button class="btn btn-primary" onclick="window.print()">⬆ Print / Export PDF</button>
+    </div>
+  </div>
+
+  <aside class="results-col">
+    <div id="flexi-res" style="display:none;">
+      <div class="res-card">
+        <div class="res-hdr" style="background:var(--blue);">Flexi KCC — Sanctioned Limit</div>
+        <div class="res-body">
+          <div class="cmpl-box">
+            <div class="cmpl-lbl">Flexi KCC Limit</div>
+            <div class="cmpl-val" id="flexi-res-val">₹ —</div>
+            <div class="cmpl-sub">Simplified limit · Marginal Farmer (≤ 1 ha)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="normal-res">
+      <div class="res-card">
+        <div class="res-hdr" style="background:#1D4ED8;">Component A — Crop Cultivation</div>
+        <div class="res-body">
+          <div class="calc-sec">
+            <div class="calc-sec-hdr">Base &amp; Add-ons</div>
+            <div class="calc-rows" id="res-rows-a"><div class="cr muted"><span class="cr-lbl">No crops entered yet</span></div></div>
+          </div>
+          <div class="calc-sec">
+            <div class="calc-sec-hdr">Year-wise MPL <span style="font-weight:400;text-transform:none;letter-spacing:0;">10% compound escalation</span></div>
+            <div style="overflow-x:auto;">
+              <table class="yr-tbl"><thead><tr><th>Year</th><th>Drawing Limit (₹)</th></tr></thead>
+              <tbody id="yr-a"><tr class="empty"><td colspan="2">—</td></tr></tbody></table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="res-card">
+        <div class="res-hdr" style="background:#15803D;">Component B — Allied Activities</div>
+        <div class="res-body">
+          <div class="calc-sec">
+            <div class="calc-sec-hdr">Base &amp; Add-ons</div>
+            <div class="calc-rows" id="res-rows-b"><div class="cr muted"><span class="cr-lbl">No activities entered yet</span></div></div>
+          </div>
+          <div class="calc-sec">
+            <div class="calc-sec-hdr">Year-wise MPL <span style="font-weight:400;text-transform:none;letter-spacing:0;">10% compound escalation</span></div>
+            <div style="overflow-x:auto;">
+              <table class="yr-tbl"><thead><tr><th>Year</th><th>Drawing Limit (₹)</th></tr></thead>
+              <tbody id="yr-b"><tr class="empty"><td colspan="2">—</td></tr></tbody></table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="res-card">
+        <div class="res-hdr" style="background:#C2410C;">Component C — Investment Credit</div>
+        <div class="res-body">
+          <div class="calc-rows" id="res-rows-c"><div class="cr muted"><span class="cr-lbl">No items entered yet</span></div></div>
+        </div>
+      </div>
+
+      <div class="res-card">
+        <div class="res-hdr" style="background:var(--navy);">Composite KCC Limit (CMPL)</div>
+        <div class="res-body">
+          <div class="calc-rows">
+            <div class="cr"><span class="cr-lbl">A — Year 6 MPL</span><span class="cr-val" id="cmpl-a">—</span></div>
+            <div class="cr"><span class="cr-lbl">B — Year 6 MPL</span><span class="cr-val" id="cmpl-b">—</span></div>
+            <div class="cr"><span class="cr-lbl">C — Term Loan Total</span><span class="cr-val" id="cmpl-c">—</span></div>
+            <div class="divider"></div>
+            <div class="cr sub"><span class="cr-lbl">Raw Total</span><span class="cr-val" id="cmpl-raw">—</span></div>
+            <div class="cr" style="font-size:10.5px;color:var(--text3);"><span>Rounded to nearest ₹1,000 per RBI directions</span></div>
+          </div>
+          <div class="cmpl-box">
+            <div class="cmpl-lbl">Composite Maximum Permissible Limit</div>
+            <div class="cmpl-val" id="cmpl-final">₹ —</div>
+            <div class="cmpl-sub">6-year composite KCC facility</div>
+          </div>
+          <div class="badge-row" id="coll-badges"></div>
+        </div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script>
+'use strict';
+let _cid=1,_aid=1,_tid=1;
+let crops=[],allies=[],terms=[];
+
+function inr(n){
+  if(n===null||n===undefined||isNaN(n)||n==='')return'—';
+  n=Math.round(Number(n));
+  if(n===0)return'₹0';
+  const sign=n<0?'−':'';
+  const s=Math.abs(n).toString();
+  let r;
+  if(s.length<=3){r=s;}
+  else{
+    const l3=s.slice(-3);let rest=s.slice(0,-3);
+    const parts=[];
+    while(rest.length>2){parts.unshift(rest.slice(-2));rest=rest.slice(0,-2);}
+    if(rest)parts.unshift(rest);
+    r=parts.join(',')+','+l3;
+  }
+  return sign+'₹'+r;
+}
+function round1k(v){return Math.round(v/1000)*1000;}
+function numVal(id){const e=document.getElementById(id);if(!e)return 0;const v=parseFloat(e.value);return isNaN(v)?0:Math.max(0,v);}
+
+function addCrop(data){
+  const c={id:_cid++,name:data?.name||'',season:data?.season||'Kharif',acres:data?.acres||'',sof:data?.sof||''};
+  crops.push(c);
+  const tb=document.getElementById('crop-tbody');
+  const tr=document.createElement('tr');tr.id='cr'+c.id;
+  tr.innerHTML=`<td><input type="text" id="cn${c.id}" placeholder="e.g. Paddy" value="${c.name}" oninput="computeAndRender()"></td>
+    <td><select id="cs${c.id}" onchange="computeAndRender()">${['Kharif','Rabi','Zaid','Annual'].map(s=>`<option${c.season===s?' selected':''}>${s}</option>`).join('')}</select></td>
+    <td><input type="number" id="ca${c.id}" min="0" step="0.01" placeholder="0.00" value="${c.acres}" oninput="computeAndRender()"></td>
+    <td><input type="number" id="cf${c.id}" min="0" step="100" placeholder="0" value="${c.sof}" oninput="computeAndRender()"></td>
+    <td class="computed-val" id="cb${c.id}">—</td>
+    <td><button class="btn-del" onclick="delCrop(${c.id})" title="Remove">✕</button></td>`;
+  tb.appendChild(tr);computeAndRender();
+}
+function delCrop(id){crops=crops.filter(c=>c.id!==id);document.getElementById('cr'+id)?.remove();computeAndRender();}
+
+function addAllied(data){
+  const a={id:_aid++,name:data?.name||'',units:data?.units||'',sof:data?.sof||''};
+  allies.push(a);
+  const tb=document.getElementById('allied-tbody');
+  const tr=document.createElement('tr');tr.id='ar'+a.id;
+  tr.innerHTML=`<td><input type="text" id="an${a.id}" placeholder="e.g. Dairy" value="${a.name}" oninput="computeAndRender()"></td>
+    <td><input type="number" id="au${a.id}" min="0" step="1" placeholder="0" value="${a.units}" oninput="computeAndRender()"></td>
+    <td><input type="number" id="af${a.id}" min="0" step="100" placeholder="0" value="${a.sof}" oninput="computeAndRender()"></td>
+    <td class="computed-val" id="ab${a.id}">—</td>
+    <td><button class="btn-del" onclick="delAllied(${a.id})" title="Remove">✕</button></td>`;
+  tb.appendChild(tr);computeAndRender();
+}
+function delAllied(id){allies=allies.filter(a=>a.id!==id);document.getElementById('ar'+id)?.remove();computeAndRender();}
+
+function addTerm(data){
+  const t={id:_tid++,particulars:data?.particulars||'',year:data?.year||1,units:data?.units||'',cost:data?.cost||''};
+  terms.push(t);
+  const tb=document.getElementById('term-tbody');
+  const tr=document.createElement('tr');tr.id='tr'+t.id;
+  tr.innerHTML=`<td><input type="text" id="tp${t.id}" placeholder="e.g. Pump Set" value="${t.particulars}" oninput="computeAndRender()"></td>
+    <td><select id="ty${t.id}" onchange="computeAndRender()">${[1,2,3,4,5,6].map(y=>`<option value="${y}"${t.year==y?' selected':''}>${y}</option>`).join('')}</select></td>
+    <td><input type="number" id="tu${t.id}" min="0" step="1" placeholder="0" value="${t.units}" oninput="computeAndRender()"></td>
+    <td><input type="number" id="tc${t.id}" min="0" step="1000" placeholder="0" value="${t.cost}" oninput="computeAndRender()"></td>
+    <td class="computed-val" id="tt${t.id}">—</td>
+    <td><button class="btn-del" onclick="delTerm(${t.id})" title="Remove">✕</button></td>`;
+  tb.appendChild(tr);computeAndRender();
+}
+function delTerm(id){terms=terms.filter(t=>t.id!==id);document.getElementById('tr'+id)?.remove();computeAndRender();}
+
+function toggleSec(s){
+  const hdr=document.getElementById('hdr-'+s),body=document.getElementById('body-'+s);
+  const open=hdr.classList.contains('open');
+  hdr.classList.toggle('open',!open);body.classList.toggle('closed',open);
+}
+function openSec(s){document.getElementById('hdr-'+s).classList.add('open');document.getElementById('body-'+s).classList.remove('closed');}
+
+function onFlexiToggle(){
+  const on=document.getElementById('flexi-tog').checked;
+  document.getElementById('flexi-limit-row').style.display=on?'flex':'none';
+  computeAndRender();
+}
+
+function compute(){
+  const flexi=document.getElementById('flexi-tog').checked;
+  if(flexi){const v=numVal('flexi-val');return{flexi:true,flexiLimit:Math.max(10000,Math.min(50000,round1k(v)))};}
+  const cropData=crops.map(c=>({id:c.id,acres:parseFloat(document.getElementById('ca'+c.id)?.value)||0,sof:parseFloat(document.getElementById('cf'+c.id)?.value)||0})).map(c=>({...c,base:c.acres*c.sof}));
+  const alliedData=allies.map(a=>({id:a.id,name:document.getElementById('an'+a.id)?.value||'',units:parseFloat(document.getElementById('au'+a.id)?.value)||0,sof:parseFloat(document.getElementById('af'+a.id)?.value)||0})).map(a=>({...a,base:a.units*a.sof}));
+  const termData=terms.map(t=>({id:t.id,particulars:document.getElementById('tp'+t.id)?.value||'',year:parseInt(document.getElementById('ty'+t.id)?.value)||1,units:parseFloat(document.getElementById('tu'+t.id)?.value)||0,cost:parseFloat(document.getElementById('tc'+t.id)?.value)||0})).map(t=>({...t,total:t.units*t.cost}));
+  const insA=parseFloat(document.getElementById('ins-a')?.value)||0;
+  const insB=parseFloat(document.getElementById('ins-b')?.value)||0;
+  const hasA=cropData.some(c=>c.base>0),hasB=alliedData.some(a=>a.base>0);
+  const stA=cropData.reduce((s,c)=>s+c.base,0);
+  const consumA=stA*0.10,maintA=stA*0.20,y1A=stA+consumA+maintA+insA;
+  const yrsA=[];if(hasA){yrsA.push(y1A);for(let i=1;i<6;i++)yrsA.push(yrsA[i-1]*1.1);}
+  const stB=alliedData.reduce((s,a)=>s+a.base,0);
+  const consumB=(hasA&&hasB)?0:stB*0.10,maintB=stB*0.20,y1B=stB+consumB+maintB+insB;
+  const yrsB=[];if(hasB){yrsB.push(y1B);for(let i=1;i<6;i++)yrsB.push(yrsB[i-1]*1.1);}
+  const termTotal=termData.reduce((s,t)=>s+t.total,0);
+  const aY6=yrsA[5]||0,bY6=yrsB[5]||0,rawTotal=aY6+bY6+termTotal,cmpl=round1k(rawTotal);
+  return{flexi:false,cropData,alliedData,termData,insA,insB,hasA,hasB,stA,consumA,maintA,y1A,yrsA,stB,consumB,maintB,y1B,yrsB,termTotal,aY6,bY6,rawTotal,cmpl};
+}
+
+function render(){
+  const r=compute();
+  document.getElementById('flexi-res').style.display=r.flexi?'block':'none';
+  document.getElementById('normal-res').style.display=r.flexi?'none':'block';
+  ['card-a','card-b','card-c'].forEach(id=>{const el=document.getElementById(id);if(el){el.style.opacity=r.flexi?'0.45':'1';el.style.pointerEvents=r.flexi?'none':'';}});
+  if(r.flexi){document.getElementById('flexi-res-val').textContent=inr(r.flexiLimit);return;}
+  r.cropData.forEach(c=>{const el=document.getElementById('cb'+c.id);if(el)el.textContent=c.base>0?inr(c.base):'—';});
+  r.alliedData.forEach(a=>{const el=document.getElementById('ab'+a.id);if(el)el.textContent=a.base>0?inr(a.base):'—';});
+  r.termData.forEach(t=>{const el=document.getElementById('tt'+t.id);if(el)el.textContent=t.total>0?inr(t.total):'—';});
+  document.getElementById('sum-a').textContent=r.hasA?inr(Math.round(r.yrsA[5]))+' (Y6 MPL)':'';
+  document.getElementById('sum-b').textContent=r.hasB?inr(Math.round(r.yrsB[5]))+' (Y6 MPL)':'';
+  document.getElementById('sum-c').textContent=r.termTotal>0?inr(r.termTotal):'';
+  document.getElementById('note-a-both').style.display=(r.hasA&&r.hasB)?'flex':'none';
+  document.getElementById('note-b-both').style.display=(r.hasA&&r.hasB)?'flex':'none';
+  document.getElementById('note-b-ins').style.display=(r.hasA&&r.hasB&&r.insA>0&&r.insB>0)?'flex':'none';
+  if(r.hasA){
+    document.getElementById('res-rows-a').innerHTML=`<div class="cr"><span class="cr-lbl">Crop loan base — Sub-total A</span><span class="cr-val">${inr(r.stA)}</span></div><div class="cr"><span class="cr-lbl">+ 10% post-harvest / consumption</span><span class="cr-val">${inr(r.consumA)}</span></div><div class="cr"><span class="cr-lbl">+ 20% maintenance / tech / GAP</span><span class="cr-val">${inr(r.maintA)}</span></div><div class="cr"><span class="cr-lbl">+ Insurance premium</span><span class="cr-val">${inr(r.insA)}</span></div><div class="divider"></div><div class="cr tot"><span class="cr-lbl">Year 1 Limit</span><span class="cr-val">${inr(Math.round(r.y1A))}</span></div>`;
+    document.getElementById('yr-a').innerHTML=r.yrsA.map((y,i)=>`<tr><td>${i===0?'Year 1':'Year '+(i+1)+(i===5?' ★':'')}</td><td>${inr(Math.round(y))}</td></tr>`).join('');
+  }else{document.getElementById('res-rows-a').innerHTML='<div class="cr muted"><span class="cr-lbl">No crops entered yet</span></div>';document.getElementById('yr-a').innerHTML='<tr class="empty"><td colspan="2">—</td></tr>';}
+  if(r.hasB){
+    const cDisp=(r.hasA&&r.hasB)?`<span class="strike">${inr(r.stB*0.10)}</span> <span class="italic">suppressed (Rule 1)</span>`:inr(r.consumB);
+    document.getElementById('res-rows-b').innerHTML=`<div class="cr"><span class="cr-lbl">Allied activity base</span><span class="cr-val">${inr(r.stB)}</span></div><div class="cr"><span class="cr-lbl">+ 10% post-harvest / consumption</span><span class="cr-val">${cDisp}</span></div><div class="cr"><span class="cr-lbl">+ 20% maintenance / tech / GAP</span><span class="cr-val">${inr(r.maintB)}</span></div><div class="cr"><span class="cr-lbl">+ Insurance premium</span><span class="cr-val">${inr(r.insB)}</span></div><div class="divider"></div><div class="cr tot"><span class="cr-lbl">Year 1 Limit</span><span class="cr-val">${inr(Math.round(r.y1B))}</span></div>`;
+    document.getElementById('yr-b').innerHTML=r.yrsB.map((y,i)=>`<tr><td>${i===0?'Year 1':'Year '+(i+1)+(i===5?' ★':'')}</td><td>${inr(Math.round(y))}</td></tr>`).join('');
+  }else{document.getElementById('res-rows-b').innerHTML='<div class="cr muted"><span class="cr-lbl">No activities entered yet</span></div>';document.getElementById('yr-b').innerHTML='<tr class="empty"><td colspan="2">—</td></tr>';}
+  const hasC=r.termTotal>0;
+  if(hasC){document.getElementById('res-rows-c').innerHTML=r.termData.filter(t=>t.total>0).map(t=>`<div class="cr"><span class="cr-lbl">${t.particulars||'Item'} (Year ${t.year})</span><span class="cr-val">${inr(t.total)}</span></div>`).join('')+'<div class="divider"></div><div class="cr tot"><span class="cr-lbl">Term Loan Total</span><span class="cr-val">'+inr(r.termTotal)+'</span></div>';}
+  else{document.getElementById('res-rows-c').innerHTML='<div class="cr muted"><span class="cr-lbl">No items entered yet</span></div>';}
+  document.getElementById('cmpl-a').textContent=r.hasA?inr(Math.round(r.aY6)):'₹0';
+  document.getElementById('cmpl-b').textContent=r.hasB?inr(Math.round(r.bY6)):'₹0';
+  document.getElementById('cmpl-c').textContent=hasC?inr(r.termTotal):'₹0';
+  const any=r.hasA||r.hasB||hasC;
+  document.getElementById('cmpl-raw').textContent=any?inr(Math.round(r.rawTotal)):'—';
+  document.getElementById('cmpl-final').textContent=r.cmpl>0?inr(r.cmpl):'₹ —';
+  let b='';
+  if(r.cmpl>0&&r.cmpl<=200000)b='<span class="ibadge badge-cf">✓ Collateral-free — limit ≤ ₹2 lakh</span>';
+  else if(r.cmpl>200000&&r.cmpl<=300000)b='<span class="ibadge badge-tie">↑ Up to ₹3 lakh — tie-up / hypothecation applicable</span>';
+  else if(r.cmpl>300000)b='<span class="ibadge badge-col">⚡ Limit > ₹3 lakh — collateral required</span>';
+  document.getElementById('coll-badges').innerHTML=b;
+}
+function computeAndRender(){render();}
+
+function loadSample(){
+  clearAll(true);
+  addCrop({name:'Paddy',season:'Kharif',acres:'2',sof:'15000'});
+  addCrop({name:'Wheat',season:'Rabi',acres:'2',sof:'12000'});
+  document.getElementById('ins-a').value='2000';
+  addAllied({name:'Cross-breed Cows (Dairy)',units:'2',sof:'35000'});
+  document.getElementById('ins-b').value='1500';
+  addTerm({particulars:'Pump Set',year:1,units:'1',cost:'50000'});
+  addTerm({particulars:'Dairy Shed & Equipment',year:1,units:'1',cost:'150000'});
+  openSec('a');openSec('b');openSec('c');
+  computeAndRender();
+}
+
+function clearAll(skipAdd){
+  crops=[];allies=[];terms=[];
+  ['crop-tbody','allied-tbody','term-tbody'].forEach(id=>document.getElementById(id).innerHTML='');
+  document.getElementById('ins-a').value='';document.getElementById('ins-b').value='';
+  document.getElementById('flexi-tog').checked=false;document.getElementById('flexi-limit-row').style.display='none';
+  document.getElementById('flexi-ha').value='';document.getElementById('flexi-val').value='25000';
+  if(!skipAdd){addCrop();addAllied();addTerm();}
+}
+function resetAll(){clearAll(false);computeAndRender();}
+
+document.addEventListener('DOMContentLoaded',()=>{addCrop();addAllied();addTerm();computeAndRender();});
+</script>
+</body>
+</html>
